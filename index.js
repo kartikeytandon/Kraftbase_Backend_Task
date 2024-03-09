@@ -5,6 +5,7 @@ const cookieParser = require("cookie-parser")
 
 const User = require("./routes/user")
 const Order = require("./routes/order")
+const Agent = require("./routes/agent")
 
 const app = express()
 dotenv.config()
@@ -33,6 +34,7 @@ app.use(cookieParser())
 
 app.use('/api/v1', User)
 app.use('/api/v1', Order)
+app.use('/api/v1', Agent)
 
 app.listen(PORT, () => {
     connect()

@@ -24,8 +24,8 @@ const userSchema = new mongoose.Schema({
         ref: 'Order'
     }],
     ratings: {
-        order: Number, // Rating for orders
-        deliveryAgent: Number // Rating for delivery agents
+        order: Number, 
+        deliveryAgent: Number
     }
 })
 

@@ -1,21 +1,35 @@
-const User = require('../models/user')
 const Restaurant = require('../models/restaurant')
-// const menuItemSchema = require('../models/menuItems')
+const Order = require('../models/order')
+const menuItemSchema = require('../models/menuItems')
+const Agents = require('../models/deliveryAgent')
 
 exports.addRestaurant = async (req, res) => {
     try {
         const { name, location, menu, pricing } = req.body
 
-        await Restaurant.create({
+        const restaurant = await Restaurant.create({
             name,
             location,
             menu,
             pricing
         })
 
+        const menuItems = menu.map(item => ({
+            itemName: item.itemName,
+            description: item.description,
+            price: item.price
+        }));
+
+        // const ids = await menuItemSchema.insertMany(menuItems)
+        // await Restaurant.findByIdAndUpdate(restaurant._id, { $push: { menuItemIds: ids._id } })
+
+        const insertedMenuItems = await menuItemSchema.insertMany(menuItems)
+        const menuItemIds = insertedMenuItems.map(item => item._id)
+        await Restaurant.findByIdAndUpdate(restaurant._id, { $push: { menuItemIds: { $each: menuItemIds } } })
+
         res.status(200).json({
             success: true,
-            message: 'Restaurants created successfully'
+            message: `Restaurant named ${name} created successfully`
         })
     } catch(error) {
         return res.status(500).json({
@@ -58,7 +72,7 @@ exports.getOnlineRestaurant = async (req, res) => {
 }
 
 exports.getOfflineRestaurant = async (req, res) => {
-    try {0
+    try {
         const restaurants = await Restaurant.find({ isOnline: true });
 
         res.status(200).json({
@@ -66,6 +80,131 @@ exports.getOfflineRestaurant = async (req, res) => {
             restaurants
         })
     } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+exports.createOrder = async (req, res) => {
+    try {
+        const { restaurantId } = req.params
+        const { orderedItems }  = req.body
+        const restaurant = await Restaurant.findOne({ _id: restaurantId, isOnline: true })
+
+        if(!restaurant) {
+            return res.status(404).json({
+                success: false,
+                message: 'Restaurant not found'
+            });
+        }
+
+        // console.log(orderedItems) 
+
+        const order = await Order.create({
+            user: req.user._id,
+            restaurant: restaurantId,
+            orderedItems: orderedItems,
+        })
+
+        // console.log(order)
+        // console.log(orderedItems)
+
+        await Restaurant.findByIdAndUpdate(restaurantId, { $push: { orders: order._id } })
+
+        let totalPrice = 0
+        for(const itemId of orderedItems) {
+            const menuItem = await menuItemSchema.findById(itemId)
+            totalPrice += menuItem.price
+        }
+
+        await Order.findByIdAndUpdate(order._id, { totalPrice: totalPrice })
+
+        res.status(200).json({
+            success: true,
+            message: "Order placed successfully, waiting for Restaurent to accept it!"
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+exports.updateOrderStatus = async (req, res) => {
+    try {
+        const { restaurant_id, order_id } = req.params
+        const { status } = req.body
+
+        const restaurant = await Restaurant.findOne({ _id: restaurant_id, isOnline: true })
+        if(!restaurant) {
+            return res.status(404).json({
+                success: false,
+                message: 'Restaurant not found'
+            });
+        }
+        const order = await Order.findOne({ _id: order_id })
+        if(!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            });
+        }
+
+        await Order.findByIdAndUpdate(order_id, { status: status })
+
+        if(status === "accepted") {
+            const agents = await Agents.find({ isAvailable: true })
+            // console.log(agents)
+
+            if(agents.length > 0) {
+                const randomIndex = Math.floor(Math.random() * agents.length)
+                const assignedAgent = agents[randomIndex]
+                // console.log(assignedAgent)
+                await Order.findByIdAndUpdate(order_id, {deliveryAgent: assignedAgent._id})
+                await Agents.findByIdAndUpdate(assignedAgent._id, {isAvailable: false})
+                await Agents.findByIdAndUpdate(assignedAgent._id, {orders: order})
+    
+                res.status(200).json({
+                    success: true,
+                    message: `Order status updated to ${status} and your order will be delivered by ${assignedAgent.name}`
+                })
+            } else {
+                res.status(200).json({
+                    success: true,
+                    message: `Order status updated to ${status} but no delivery agent available right now!`
+                })
+            }
+        }
+        // console.log(order.status)
+    } catch(error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+exports.updateRestaurantStatus = async (req, res) => {
+    try {
+        const { restaurant_id } = req.params
+        const restaurant = await Restaurant.findOne({ _id: restaurant_id })
+        if(!restaurant) {
+            return res.status(404).json({
+                success: false,
+                message: 'Restaurant not found'
+            });
+        }
+
+        await Restaurant.findByIdAndUpdate(restaurant_id, { isOnline: !restaurant.isOnline })
+
+        res.status(200).json({
+            success: true,
+            message: `Restaurant Status Updated`
+        })
+    } catch(error) {
         res.status(500).json({
             success: false,
             message: error.message

@@ -33,6 +33,10 @@ const restaurantSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
     }],
+    menuItemIds: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'menuItemSchema',
+    }],
     rating: Number
 })
 

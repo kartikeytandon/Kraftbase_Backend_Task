@@ -89,3 +89,14 @@ exports.logout = async (req, res) => {
         })
     }
 }
+
+exports.rateOrder = async (req, res) => {
+    try {
+        
+    } catch(error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
