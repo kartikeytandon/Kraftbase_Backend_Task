@@ -46,3 +46,43 @@ exports.updateDeliveryStatus = async (req, res) => {
         })
     }
 }
+
+exports.giveDeliveryRating = async (req, res) => {
+    try {
+        const { agent_id } = req.params
+        const { rating } = req.body
+
+        const agent = await Agent.findById(agent_id)
+        if(!agent) {
+            return res.status(404).json({
+                success: false,
+                message: 'Agent not found'
+            })
+        }
+
+        if(!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid rating. Rating must be between 1 and 5.'
+            })
+        }
+
+        let prevRating = agent.rating
+        if(prevRating === 0) {
+            await Agent.findByIdAndUpdate(agent_id, { rating: rating })
+        } else {
+            let newRating = (prevRating + rating)/2
+            await Agent.findByIdAndUpdate(agent_id, { rating: newRating })
+        }
+        
+        res.status(200).json({
+            success: true,
+            message: `Rating given to your delivery agent`
+        })
+    } catch(error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}

@@ -211,3 +211,77 @@ exports.updateRestaurantStatus = async (req, res) => {
         })
     }
 }
+
+exports.giveOrderRating = async (req, res) => {
+    try {
+        const { order_id } = req.params
+        const { rating } = req.body
+
+        const order = await Order.findById(order_id)
+        if(!order) {
+            return res.status(404).json({
+                success: false,
+                message: 'Order not found'
+            })
+        }
+
+        if(!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid rating. Rating must be between 1 and 5.'
+            })
+        }
+
+        await Order.findByIdAndUpdate(order_id, { rating: rating })
+        
+        res.status(200).json({
+            success: true,
+            message: `Rating given to your order`
+        })
+    } catch(error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+exports.giveRestaurantRating = async (req, res) => {
+    try {
+        const { restaurant_id } = req.params
+        const { rating } = req.body
+
+        const restaurant = await Restaurant.findById(restaurant_id)
+        if(!restaurant) {
+            return res.status(404).json({
+                success: false,
+                message: 'Restaurant not found'
+            })
+        }
+
+        if(!rating || rating < 1 || rating > 5) {
+            return res.status(400).json({
+                success: false,
+                message: 'Invalid rating. Rating must be between 1 and 5.'
+            })
+        }
+
+        let prevRating = restaurant.rating
+        if(prevRating === 0) {
+            await Restaurant.findByIdAndUpdate(restaurant_id, { rating: rating })
+        } else {
+            let newRating = (prevRating + rating)/2
+            await Restaurant.findByIdAndUpdate(restaurant_id, { rating: newRating })
+        }
+        
+        res.status(200).json({
+            success: true,
+            message: `Rating given to the Restaurant`
+        })
+    } catch(error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}

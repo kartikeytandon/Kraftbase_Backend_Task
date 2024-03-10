@@ -23,10 +23,6 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
     }],
-    ratings: {
-        order: Number, 
-        deliveryAgent: Number
-    }
 })
 
 userSchema.pre("save", async function (next) {

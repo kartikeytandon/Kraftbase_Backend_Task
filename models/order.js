@@ -25,6 +25,10 @@ const orderSchema = new mongoose.Schema({
         enum: ['pending', 'accepted', 'rejected', 'delivered'],
         default: 'pending'
     },
+    rating: {
+        type: Number,
+        default: 0
+    },
     deliveryAgent: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'DeliveryAgent'

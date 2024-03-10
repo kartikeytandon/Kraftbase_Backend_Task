@@ -10,6 +10,10 @@ const deliveryAgentSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'
     }],
+    rating: {
+        type: Number,
+        default: 0
+    },
     deliveryStatus: {
         type: String,
         enum: ['pending', 'in_progress', 'delivered'],

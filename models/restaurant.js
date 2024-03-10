@@ -37,7 +37,10 @@ const restaurantSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'menuItemSchema',
     }],
-    rating: Number
+    rating: {
+        type: Number,
+        default: 0
+    },
 })
 
 module.exports = mongoose.model("Restaurant", restaurantSchema)
