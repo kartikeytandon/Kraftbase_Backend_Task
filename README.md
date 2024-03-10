@@ -9,13 +9,13 @@ https://tame-tan-betta-tutu.cyclic.app/api/v1
 ## 1. User Authentication
 <img src='./postman screenshots/Login.png'>
 
-## 2. Placing the Order
+## 2. Placing the Order (By the User)
 <img src='./postman screenshots/PlaceOrder.png'>
 
-## 3. Accepting the Order
+## 3. Accepting the Order (By the Restaurant)
 <img src='./postman screenshots/AcceptOrder.png'>
 
-## 4. Updating Delivery Status
+## 4. Updating Delivery Status (By the Delivery Agent)
 <img src='./postman screenshots/OrderStatus.png'>
 
 
