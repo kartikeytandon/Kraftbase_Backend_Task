@@ -20,3 +20,8 @@ https://documenter.getpostman.com/view/23648064/2sA2xh3Ybq
 
 
 ## Project Setup
+
+1. Fork the repository
+2. git clone https://github.com/kartikeytandon/Kraftbase_Backend_Task.git
+3. npm install
+4. node index.js
