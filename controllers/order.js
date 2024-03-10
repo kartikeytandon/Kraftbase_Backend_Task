@@ -73,7 +73,7 @@ exports.getOnlineRestaurant = async (req, res) => {
 
 exports.getOfflineRestaurant = async (req, res) => {
     try {
-        const restaurants = await Restaurant.find({ isOnline: true });
+        const restaurants = await Restaurant.find({ isOnline: false });
 
         res.status(200).json({
             success: true,

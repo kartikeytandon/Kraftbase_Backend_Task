@@ -29,7 +29,7 @@ exports.updateDeliveryStatus = async (req, res) => {
         if(!agent) {
             return res.status(404).json({
                 success: false,
-                message: 'Restaurant not found'
+                message: 'Order not found'
             });
         }
 

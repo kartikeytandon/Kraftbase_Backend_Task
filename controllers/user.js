@@ -2,7 +2,7 @@ const User = require('../models/user')
 
 exports.register = async (req, res) => {
     try {
-        const { name, email, password, address, role } = req.body
+        const { name, email, password, address } = req.body
 
         let user = await User.findOne({ email })
         if(user) {
@@ -17,12 +17,11 @@ exports.register = async (req, res) => {
             email,
             password,
             address,
-            role
         })
 
         res.status(200).json({
             success: true,
-            message: `User with role ${role} created successfully`
+            message: `User created successfully`
         })
     } catch (error) {
         res.status(500).json({
@@ -83,17 +82,6 @@ exports.logout = async (req, res) => {
             message: "Logged Out"
         })
     } catch (error) {
-        res.status(500).json({
-            success: false,
-            message: error.message
-        })
-    }
-}
-
-exports.rateOrder = async (req, res) => {
-    try {
-        
-    } catch(error) {
         res.status(500).json({
             success: false,
             message: error.message
