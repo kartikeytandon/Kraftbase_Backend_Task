@@ -25,6 +25,15 @@ https://tame-tan-betta-tutu.cyclic.app/api/v1
 ## Project Setup
 
 1. Fork the repository
-2. git clone https://github.com/kartikeytandon/Kraftbase_Backend_Task.git
-3. npm install
-4. node index.js
+2. Clone the repository to your local machine:
+   ```sh
+   git clone https://github.com/kartikeytandon/Kraftbase_Backend_Task.git
+3. Navigate to the project directory:
+    ```sh 
+    cd Kraftbase_Backend_Task
+4. Install the necessary dependencies:
+    ```sh 
+    npm install
+5. Run the project:
+    ```sh
+    node index.js
