@@ -22,6 +22,7 @@ exports.addAgent = async (req, res) => {
 
 exports.updateDeliveryStatus = async (req, res) => {
     try {
+        // using agent Id here
         const { order_id } = req.params
         const { deliveryStatus } = req.body
         const agent = await Agent.findById(order_id)
