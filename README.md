@@ -16,4 +16,7 @@ https://documenter.getpostman.com/view/23648064/2sA2xh3Ybq
 <img src='./postman screenshots/OrderStatus.png'>
 
 
-### For more API calls, please refer to the API documentation: https://documenter.getpostman.com/view/23648064/2sA2xh3Ybq
+### For more API calls, please refer to the API documentation: `https://documenter.getpostman.com/view/23648064/2sA2xh3Ybq`
+
+
+## Project Setup
