@@ -285,3 +285,94 @@ exports.giveRestaurantRating = async (req, res) => {
         })
     }
 }
+
+exports.updateMenuItems = async (req, res) => {
+    try {
+        const { restaurant_id, menuItem_id } = req.params
+        const { itemName, description, price } = req.body
+
+        const restaurant = await Restaurant.findById(restaurant_id)
+        const menuItem = await menuItemSchema.findById(menuItem_id)
+
+        if (!restaurant.menuItemIds.includes(menuItem_id)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Item does not exist in this Restaurant'
+            })
+        }
+
+        if(!restaurant) {
+            return res.status(404).json({
+                success: false,
+                message: 'Restaurant not found'
+            })
+        }
+        if(!menuItem) {
+            return res.status(404).json({
+                success: false,
+                message: 'Menu Item not found'
+            })
+        }
+
+        const updateObject = {}
+        if(itemName) updateObject.itemName = itemName
+        if(description) updateObject.description = description
+        if(price) updateObject.price = price
+
+        await menuItemSchema.findByIdAndUpdate(menuItem_id, updateObject)
+
+        res.status(200).json({
+            success: true,
+            message: `Menu Update successfully`
+        })
+
+    } catch(error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}
+
+exports.deleteMenuItems = async (req, res) => {
+    try {
+        const { restaurant_id, menuItem_id } = req.params
+
+        const restaurant = await Restaurant.findById(restaurant_id)
+        const menuItem = await menuItemSchema.findById(menuItem_id)
+
+        if(!restaurant.menuItemIds.includes(menuItem_id)) {
+            return res.status(404).json({
+                success: false,
+                message: 'Item does not exist in this Restaurant'
+            })
+        }
+
+        if(!restaurant) {
+            return res.status(404).json({
+                success: false,
+                message: 'Restaurant not found'
+            })
+        }
+        if(!menuItem) {
+            return res.status(404).json({
+                success: false,
+                message: 'Menu Item not found'
+            })
+        }
+
+        await menuItemSchema.findByIdAndDelete(menuItem_id)
+        await Restaurant.findByIdAndUpdate(restaurant_id, { $pull: { menuItemIds: menuItem_id } })
+
+        res.status(200).json({
+            success: true,
+            message: `MenuItem deleted successfully`
+        })
+
+    } catch(error) {
+        res.status(500).json({
+            success: false,
+            message: error.message
+        })
+    }
+}

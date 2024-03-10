@@ -14,11 +14,6 @@ const userSchema = new mongoose.Schema({
         required: true
     },
     address: String,
-    role: {
-        type: String,
-        enum: ['ordering', 'restaurant_owner', 'delivery_agent'],
-        required: true
-    },
     orders: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Order'

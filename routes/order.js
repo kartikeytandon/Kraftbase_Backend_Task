@@ -1,5 +1,5 @@
 const express = require("express")
-const { addRestaurant, getAllRestaurant, getOnlineRestaurant, getOfflineRestaurant, createOrder, updateOrderStatus, updateRestaurantStatus, giveOrderRating, giveRestaurantRating } = require("../controllers/order")
+const { addRestaurant, getAllRestaurant, getOnlineRestaurant, getOfflineRestaurant, createOrder, updateOrderStatus, updateRestaurantStatus, giveOrderRating, giveRestaurantRating, updateMenuItems, deleteMenuItems } = require("../controllers/order")
 const { isAuthenticated } = require("../middlewares/auth")
 
 const router = express.Router()
@@ -13,5 +13,7 @@ router.route('/updateOrderStatus/:restaurant_id/:order_id').patch(updateOrderSta
 router.route('/updateRestaurantStatus/:restaurant_id').patch(updateRestaurantStatus)
 router.route('/giveOrderRating/:order_id').patch(isAuthenticated, giveOrderRating)
 router.route('/giveRestaurantRating/:restaurant_id').patch(isAuthenticated, giveRestaurantRating)
+router.route('/updateMenuItems/:restaurant_id/:menuItem_id').patch(updateMenuItems)
+router.route('/deleteMenuItems/:restaurant_id/:menuItem_id').delete(deleteMenuItems)
 
 module.exports = router
